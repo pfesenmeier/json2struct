@@ -1,19 +1,15 @@
 [package]
-name = "json2struct"
-version = "0.1.6"
-authors = ["petechen <15736755067@163.com>"]
-edition = "2018"
-homepage = "https://github.com/ptechen"
-documentation = "https://github.com/ptechen/json2struct/blob/master/README.md"
-repository = "https://github.com/ptechen/json2struct.git"
+name = "json2struct2"
+version = "0.0.1"
+authors = ["pfesenmeier <pfesenmeier@gmail.com>"]
+edition = "2021"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-description = "Json 2 struct for golang"
+description = "Json 2 struct (fork of https://github.com/ptechen/json2struct.git)"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-quicli = "0.4.0"
-structopt = "0.3.15"
-serde_derive = "1.0.115"
-serde_json = "1.0.57"
+serde_derive = "1"
+serde_json = "1"
 heck = "0.3.1"
+clap = { version = "3.0.5", features = ["derive"]}

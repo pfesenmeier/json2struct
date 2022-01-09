@@ -1,26 +1,27 @@
 pub mod rust;
 
-use structopt::StructOpt;
+use clap::Parser;
 
 /// Json 2 Struct for rust.
-#[derive(Debug, StructOpt)]
+#[derive(Parser)]
+#[clap(author, version, about)]
 pub struct ApplicationArguments {
-    /// Input a json string, example: json2struct rust '{"test":"test"}'
+    /// a json string, e.g. '{"test":"test"}'
     pub json: String,
 
-    /// 是否添加 pub, example: json2struct rust '{"test":"test"}' -p false
-    #[structopt(default_value = "true", short)]
+    /// make fields public
+    #[clap(default_value = "true", short, long)]
     pub public: String,
 
-    /// 添加 derive, example: json2struct rust '{"test":"test"}' -d '#[derive(Debug)]'
-    #[structopt(default_value = "#[derive(Debug)]", short)]
+    /// derive options e.g. '#[derive(Debug)]'
+    #[clap(default_value = "#[derive(Debug)]", short, long)]
     pub derive: String,
 
-    /// 是否允许字段为驼峰 camel, example: json2struct rust '{"test":"test"}' -c true
-    #[structopt(default_value = "false", short)]
-    pub camel: String,
+    /// camelCase struct fields (???) 
+    #[clap(default_value = "false", short, long)]
+    pub camel_case: String,
 
-    /// 指定结构体名字, example: json2struct rust '{"test":"test"}' -s TTTT
-    #[structopt(default_value = "XXX", short)]
+    /// struct name
+    #[clap(default_value = "XXX", short, long)]
     pub struct_name:String,
 }
