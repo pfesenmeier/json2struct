@@ -1,11 +1,11 @@
-mod json2struct;
+mod application_arguments;
+mod json_parser;
 extern crate serde_derive;
 extern crate serde_json;
 extern crate heck;
 use serde_json::Value;
-use json2struct::rust::{rust_parse, set_pub, set_derive};
-use json2struct::ApplicationArguments;
-use crate::json2struct::rust::set_camel;
+use json_parser::{rust_parse, set_pub, set_derive, set_camel};
+use application_arguments::ApplicationArguments;
 use clap::Parser;
 use std::error::Error;
 

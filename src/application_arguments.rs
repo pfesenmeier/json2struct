@@ -1,5 +1,3 @@
-pub mod rust;
-
 use clap::Parser;
 
 /// Json 2 Struct for rust.
