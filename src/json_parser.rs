@@ -54,7 +54,6 @@ pub fn rust_parse(params: &Value, struct_name: &str) -> String {
     }
 }
 
-/// 对map类型的值进行处理
 fn is_object(params: &Value) -> (Vec<String>, String) {
     let mut fields: Vec<String> = vec![];
     let cur_map = params.as_object().unwrap();
@@ -99,14 +98,12 @@ fn is_ok(cur_type: &str, came_key: &str, val: &Value, ok: bool) -> String {
     }
 }
 
-/// 对列表类型的数据进行处理
 fn is_array(params: &Value) -> &Value {
     let cur = params.as_array().unwrap();
     let val = cur.get(0).unwrap();
     val
 }
 
-/// 获取数据类型
 fn get_data_type(params: &Value, key: &str) -> (String, bool, bool) {
     let mut ok = false;
     let mut flag = true;
