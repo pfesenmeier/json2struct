@@ -1,13 +1,11 @@
-mod application_arguments;
-mod json_parser;
-extern crate serde_derive;
-extern crate serde_json;
-extern crate heck;
 use serde_json::Value;
 use json_parser::{rust_parse, set_pub, set_derive, set_camel};
 use application_arguments::ApplicationArguments;
 use clap::Parser;
 use std::error::Error;
+
+mod application_arguments;
+mod json_parser;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let opt = ApplicationArguments::parse();
