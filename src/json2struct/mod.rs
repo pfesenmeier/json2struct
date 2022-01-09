@@ -1,37 +1,10 @@
 pub mod rust;
-pub mod golang;
 
 use structopt::StructOpt;
 
-#[derive(Debug, StructOpt)]
-pub enum Command {
-    #[structopt(name = "rust")]
-    Rust(Rust),
-
-    #[structopt(name = "go")]
-    Golang(Golang),
-
-
-}
-
-/// Json 2 Struct for golang.
-#[derive(Debug, StructOpt)]
-pub struct Golang {
-    /// Input a json string, example: json2struct go '{"test":"test"}'
-    pub json: String,
-
-    /// 是否添加 omitempty, example: json2struct go '{"test":"test"}' -o false
-    #[structopt(default_value = "true", short)]
-    pub omitempty: String,
-
-    /// 指定结构体名字, example: json2struct go '{"test":"test"}' -s TTTT
-    #[structopt(default_value = "XXX", short)]
-    pub struct_name:String,
-}
-
 /// Json 2 Struct for rust.
 #[derive(Debug, StructOpt)]
-pub struct Rust {
+pub struct ApplicationArguments {
     /// Input a json string, example: json2struct rust '{"test":"test"}'
     pub json: String,
 
@@ -50,11 +23,4 @@ pub struct Rust {
     /// 指定结构体名字, example: json2struct rust '{"test":"test"}' -s TTTT
     #[structopt(default_value = "XXX", short)]
     pub struct_name:String,
-}
-
-#[derive(Debug, StructOpt)]
-#[structopt(name = "classify")]
-pub struct ApplicationArguments {
-    #[structopt(subcommand)]
-    pub command: Command,
 }
