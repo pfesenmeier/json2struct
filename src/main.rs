@@ -16,11 +16,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         parser.set_pub(String::from("pub"))
     }
 
-    let camel_case = &opt.camel_case;
-    if camel_case != "false" {
-        parser.set_camel(String::from("#[allow(non_snake_case)]"))
-    }
-
     let derive: &str = &opt.derive;
     parser.set_derive(derive.to_string());
     let res = parser.parse(&params, &opt.struct_name);
