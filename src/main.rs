@@ -1,20 +1,21 @@
-use application_arguments::ApplicationArguments;
-use clap::Parser;
-use serde_json::Value;
-use std::error::Error;
-
-mod application_arguments;
+mod cli_args;
 mod json_parser;
 
+use clap::Parser;
+use cli_args::CliArgs;
+use std::error::Error;
+
 fn main() -> Result<(), Box<dyn Error>> {
-    let opt = ApplicationArguments::parse();
+    let CliArgs {
+        derive,
+        private,
+        json,
+        struct_name,
+    } = CliArgs::parse();
 
-    let params: Value = serde_json::from_str(&opt.json)?;
+    let mut parser = json_parser::Parser::new(private, derive);
 
-    let derive: &str = &opt.derive;
-
-    let mut parser = json_parser::Parser::new(opt.private, derive.to_string()); 
-    let res = parser.parse(&params, &opt.struct_name);
+    let res = parser.parse(&serde_json::from_str(&json)?, &struct_name);
 
     println!("{}", res);
 
