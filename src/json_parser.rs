@@ -58,6 +58,7 @@ impl Parser {
         let mut fields: Vec<String> = vec![];
         let cur_map = params.as_object().unwrap();
         let mut new_struct = String::new();
+
         for key_val in cur_map.iter() {
             let (key, val) = key_val;
             let (cur_type, ok, data2) = self.get_data_type(val, key);
@@ -66,10 +67,8 @@ impl Parser {
             let snake_key = key.as_str().to_snake_case();
 
             let mut cur_struct = String::new();
-            if val.is_object() {
-                if data2 {
-                    cur_struct = self.is_ok(&cur_type, &camel_key, val, ok)
-                }
+            if val.is_object() && data2 {
+                cur_struct = self.is_ok(&cur_type, &camel_key, val, ok)
             } else if val.is_array() {
                 let cur = val.as_array().unwrap();
                 if !cur.is_empty() {
