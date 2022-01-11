@@ -100,13 +100,7 @@ impl Parser {
                 return ("HashMap<String, Value>".to_string(), ok, false);
             }
 
-            (cur_key.to_string(), ok, true)
-        } else if params.is_string() {
-            ("String".to_string(), false, true)
-        } else if params.is_i64() {
-            ("i64".to_string(), false, true)
-        } else if params.is_boolean() {
-            ("bool".to_string(), false, true)
+            (cur_key, ok, true)
         } else if params.is_array() {
             let first = params
                 .as_array()
@@ -121,12 +115,23 @@ impl Parser {
                 let (cur0, ok, flag) = self.get_data_type(first, key);
                 (format!("Vec<{}>", cur0), ok, flag)
             }
-        } else if params.is_f64() {
-            ("f64".to_string(), false, true)
-        } else if params.is_u64() {
-            ("u64".to_string(), false, true)
         } else {
-            ("Value".to_string(), false, true)
+            let value = if params.is_string() {
+                "String"
+            } else if params.is_i64() {
+                "i64"
+            } else if params.is_boolean() {
+                "bool"
+            } else if params.is_f64() {
+                "f64"
+            } else if params.is_u64() {
+                "u64"
+            } else {
+                "Value"
+            }
+            .to_string();
+
+            (value, false, true)
         }
     }
 
