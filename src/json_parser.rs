@@ -18,10 +18,10 @@ pub struct Parser {
 impl Parser {
     pub fn new(private: bool, derive: String) -> Self {
         let public = if private {
-            "".to_string()
+            ""
         } else {
-            "pub".to_string()
-        };
+            "pub"
+        }.to_string();
 
         Self {
             public,
@@ -99,51 +99,41 @@ impl Parser {
     }
 
     fn get_data_type(&mut self, params: &Value, key: &str) -> (String, bool, bool) {
-        let mut flag = true;
         if params.is_object() {
             // 1
-            let mut cur_key = key.to_string();
-            let res = self.key_exists(cur_key.clone(), cur_key.clone());
-            cur_key = res.0;
-            let ok = res.1;
+            let cur_key = key.to_string();
+            let (cur_key, ok) = self.key_exists(cur_key.clone(), cur_key.clone());
             let mut cur_type = cur_key.as_str().to_snake_case();
             // 2
             let flag_str = serde_json::to_string(params).unwrap();
             if flag_str == "{}" {
                 cur_type = String::from("HashMap<String, Value>");
-                flag = false
+                (cur_type, ok, false)
+            } else {
+                (cur_type, ok, true)
             }
-            (cur_type, ok, flag)
         } else if params.is_string() {
-            let cur_type = String::from("String");
-            (cur_type, false, flag)
+            ("String".to_string(), false, true)
         } else if params.is_i64() {
-            let cur_type = String::from("i64");
-            (cur_type, false, flag)
+            ("i64".to_string(), false, true)
         } else if params.is_boolean() {
-            let cur_type = String::from("bool");
-            (cur_type, false, flag)
+            ("bool".to_string(), false, true)
         } else if params.is_array() {
             let values = params.as_array().unwrap();
             let first = values.get(0).unwrap_or(&serde_json::Value::Null);
             if first == &serde_json::Value::Null {
                 let cur_type = format!("Vec<{}>", "Value");
-                return (cur_type, false, flag);
+                return (cur_type, false, true);
             }
-            let cur = self.get_data_type(first, key);
-            let ok = cur.1;
-            flag = cur.2;
-            let cur_type = format!("Vec<{}>", cur.0);
+            let (cur0, ok, flag) = self.get_data_type(first, key);
+            let cur_type = format!("Vec<{}>", cur0);
             (cur_type, ok, flag)
         } else if params.is_f64() {
-            let cur_type = String::from("f64");
-            (cur_type, false, flag)
+            ("f64".to_string(), false, true)
         } else if params.is_u64() {
-            let cur_type = String::from("u64");
-            (cur_type, false, flag)
+            ("u64".to_string(), false, true)
         } else {
-            let cur_type = String::from("Value");
-            (cur_type, false, flag)
+            ("Value".to_string(), false, true)
         }
     }
 
