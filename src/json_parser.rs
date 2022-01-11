@@ -59,25 +59,23 @@ impl Parser {
             let (key, val) = key_val;
             let (cur_type, ok, data2) = self.get_data_type(val, key);
 
-            let camel_key = key.as_str().to_camel_case();
-            let snake_key = key.as_str().to_snake_case();
+            new_struct += &if val.is_object() && data2 {
+                let camel_key = key.as_str().to_camel_case();
+                self.is_ok(&cur_type, &camel_key, val, ok)
+            } else if val.is_array() && !val.as_array().unwrap().is_empty() {
+                let camel_key = key.as_str().to_camel_case();
+                let cur_val = Parser::is_array(val);
+                println!("{:?}", &camel_key);
+                self.is_ok(&cur_type, &camel_key, cur_val, ok)
+            } else {
+                Default::default()
+            };
 
-            let mut cur_struct = String::new();
-            if val.is_object() && data2 {
-                cur_struct = self.is_ok(&cur_type, &camel_key, val, ok)
-            } else if val.is_array() {
-                let cur = val.as_array().unwrap();
-                if !cur.is_empty() {
-                    let cur_val = Parser::is_array(val);
-                    println!("{:?}", &camel_key);
-                    cur_struct = self.is_ok(&cur_type, &camel_key, cur_val, ok)
-                }
-                println!("{:?}", &cur_struct);
-            }
-            new_struct += cur_struct.as_str();
+            let snake_key = key.as_str().to_snake_case();
             let field = format!("    {} {}: {},", self.public, snake_key, cur_type);
             fields.push(field);
         }
+
         (fields, new_struct)
     }
 
