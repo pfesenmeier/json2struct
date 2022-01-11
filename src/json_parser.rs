@@ -32,20 +32,22 @@ impl Parser {
             "{}\n{}\n{} struct {} {}",
             self.derive, serde_camel_case, self.public, struct_name, "{"
         );
-        let mut fields: Vec<String> = vec![];
-        let mut new_struct = String::new();
-        if params.is_object() {
+
+        let (fields, new_struct) = if params.is_object() {
             let (mut fields, new_struct) = self.is_object(params);
             fields.sort();
-        }
-        let res = format!(
+            (fields, new_struct)
+        } else {
+            Default::default()
+        };
+
+        format!(
             "{}\n{}\n{}\n{}",
             struct_header,
             fields.join("\n"),
             "}\n",
             new_struct
-        );
-        res
+        )
     }
 
     fn is_object(&mut self, params: &Value) -> (Vec<String>, String) {
