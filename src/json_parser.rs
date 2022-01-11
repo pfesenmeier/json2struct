@@ -16,11 +16,10 @@ pub struct Parser {
 }
 
 impl Parser {
-    pub fn new(public: bool, derive: String) -> Self {
-        let mut p = "".to_string();
-
-        if public {
-          p += "pub"
+    pub fn new(private: bool, derive: String) -> Self {
+        let mut p = String::from("pub");
+        if private {
+          p = "".to_string()
         } 
 
         Self {

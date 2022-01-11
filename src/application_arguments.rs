@@ -8,8 +8,8 @@ pub struct ApplicationArguments {
     pub json: String,
 
     /// make fields public
-    #[clap(default_value = "true", short, long)]
-    pub public: String,
+    #[clap(short, long)]
+    pub private: bool,
 
     /// derive options e.g. '#[derive(Debug)]'
     #[clap(default_value = "#[derive(Debug)]", short, long)]

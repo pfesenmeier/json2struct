@@ -11,10 +11,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let params: Value = serde_json::from_str(&opt.json)?;
 
-    let public = &opt.public == "true";
     let derive: &str = &opt.derive;
 
-    let mut parser = json_parser::Parser::new(public, derive.to_string()); 
+    let mut parser = json_parser::Parser::new(opt.private, derive.to_string()); 
     let res = parser.parse(&params, &opt.struct_name);
 
     println!("{}", res);
