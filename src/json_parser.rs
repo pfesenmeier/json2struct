@@ -1,4 +1,4 @@
-use heck::{SnakeCase, CamelCase};
+use heck::{CamelCase, SnakeCase};
 use serde_json::Value;
 
 #[cfg(test)]
@@ -17,13 +17,14 @@ pub struct Parser {
 
 impl Parser {
     pub fn new(private: bool, derive: String) -> Self {
-        let mut p = String::from("pub");
-        if private {
-          p = "".to_string()
-        } 
+        let public = if private {
+            "".to_string()
+        } else {
+            "pub".to_string()
+        };
 
         Self {
-            public: p,
+            public,
             derive,
             ..Default::default()
         }
