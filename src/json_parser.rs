@@ -36,27 +36,19 @@ impl Parser {
         let (fields, new_struct) = if params.is_object() {
             let (mut fields, new_struct) = self.is_object(params);
             fields.sort();
-            (fields, new_struct)
+            (fields.join("\n"), new_struct)
         } else {
             Default::default()
         };
 
-        format!(
-            "{}\n{}\n{}\n{}",
-            struct_header,
-            fields.join("\n"),
-            "}\n",
-            new_struct
-        )
+        format!("{}\n{}\n{}\n{}", struct_header, fields, "}\n", new_struct)
     }
 
     fn is_object(&mut self, params: &Value) -> (Vec<String>, String) {
         let mut fields: Vec<String> = vec![];
-        let cur_map = params.as_object().unwrap();
         let mut new_struct = String::new();
 
-        for key_val in cur_map.iter() {
-            let (key, val) = key_val;
+        for (key, val) in params.as_object().unwrap() {
             let (cur_type, ok, data2) = self.get_data_type(val, key);
 
             new_struct += &if val.is_object() && data2 {
