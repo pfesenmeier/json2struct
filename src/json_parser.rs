@@ -17,11 +17,7 @@ pub struct Parser {
 
 impl Parser {
     pub fn new(private: bool, derive: String) -> Self {
-        let public = if private {
-            ""
-        } else {
-            "pub"
-        }.to_string();
+        let public = if private { "" } else { "pub" }.to_string();
 
         Self {
             public,
@@ -39,10 +35,8 @@ impl Parser {
         let mut fields: Vec<String> = vec![];
         let mut new_struct = String::new();
         if params.is_object() {
-            let cur_res = self.is_object(params);
-            fields = cur_res.0;
+            let (mut fields, new_struct) = self.is_object(params);
             fields.sort();
-            new_struct = cur_res.1;
         }
         let res = format!(
             "{}\n{}\n{}\n{}",
@@ -100,18 +94,13 @@ impl Parser {
 
     fn get_data_type(&mut self, params: &Value, key: &str) -> (String, bool, bool) {
         if params.is_object() {
-            // 1
-            let cur_key = key.to_string();
-            let (cur_key, ok) = self.key_exists(cur_key.clone(), cur_key.clone());
-            let mut cur_type = cur_key.as_str().to_snake_case();
-            // 2
-            let flag_str = serde_json::to_string(params).unwrap();
-            if flag_str == "{}" {
-                cur_type = String::from("HashMap<String, Value>");
-                (cur_type, ok, false)
-            } else {
-                (cur_type, ok, true)
+            let (cur_key, ok) = self.key_exists(String::from(key), String::from(key));
+
+            if serde_json::to_string(params).unwrap() == "{}" {
+                return ("HashMap<String, Value>".to_string(), ok, false);
             }
+
+            (cur_key.to_string(), ok, true)
         } else if params.is_string() {
             ("String".to_string(), false, true)
         } else if params.is_i64() {
@@ -119,15 +108,19 @@ impl Parser {
         } else if params.is_boolean() {
             ("bool".to_string(), false, true)
         } else if params.is_array() {
-            let values = params.as_array().unwrap();
-            let first = values.get(0).unwrap_or(&serde_json::Value::Null);
+            let first = params
+                .as_array()
+                .unwrap()
+                .get(0)
+                .unwrap_or(&serde_json::Value::Null);
+
             if first == &serde_json::Value::Null {
                 let cur_type = format!("Vec<{}>", "Value");
                 return (cur_type, false, true);
             }
+
             let (cur0, ok, flag) = self.get_data_type(first, key);
-            let cur_type = format!("Vec<{}>", cur0);
-            (cur_type, ok, flag)
+            (format!("Vec<{}>", cur0), ok, flag)
         } else if params.is_f64() {
             ("f64".to_string(), false, true)
         } else if params.is_u64() {
