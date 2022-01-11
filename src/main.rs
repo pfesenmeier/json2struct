@@ -7,18 +7,16 @@ mod application_arguments;
 mod json_parser;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut parser = json_parser::Parser::new();
     let opt = ApplicationArguments::parse();
 
     let params: Value = serde_json::from_str(&opt.json)?;
-    let public = &opt.public;
-    if public == "true" {
-        parser.set_pub(String::from("pub"))
-    }
 
+    let public = &opt.public == "true";
     let derive: &str = &opt.derive;
-    parser.set_derive(derive.to_string());
+
+    let mut parser = json_parser::Parser::new(public, derive.to_string()); 
     let res = parser.parse(&params, &opt.struct_name);
+
     println!("{}", res);
 
     Ok(())

@@ -16,15 +16,18 @@ pub struct Parser {
 }
 
 impl Parser {
-    pub fn new() -> Self {
-        Default::default()
-    }
+    pub fn new(public: bool, derive: String) -> Self {
+        let mut p = "".to_string();
 
-    pub fn set_pub(&mut self, public: String) {
-        self.public = public
-    }
-    pub fn set_derive(&mut self, derive: String) {
-        self.derive = derive
+        if public {
+          p += "pub"
+        } 
+
+        Self {
+            public: p,
+            derive,
+            ..Default::default()
+        }
     }
 
     pub fn parse(&mut self, params: &Value, struct_name: &str) -> String {
