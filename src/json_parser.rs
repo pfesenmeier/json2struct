@@ -95,20 +95,17 @@ impl Parser {
     }
 
     fn is_array(params: &Value) -> &Value {
-        let cur = params.as_array().unwrap();
-        let val = cur.get(0).unwrap();
-        val
+        params.as_array().unwrap().get(0).unwrap()
     }
 
     fn get_data_type(&mut self, params: &Value, key: &str) -> (String, bool, bool) {
-        let mut ok = false;
         let mut flag = true;
         if params.is_object() {
             // 1
             let mut cur_key = key.to_string();
             let res = self.key_exists(cur_key.clone(), cur_key.clone());
             cur_key = res.0;
-            ok = res.1;
+            let ok = res.1;
             let mut cur_type = cur_key.as_str().to_snake_case();
             // 2
             let flag_str = serde_json::to_string(params).unwrap();
@@ -119,34 +116,34 @@ impl Parser {
             (cur_type, ok, flag)
         } else if params.is_string() {
             let cur_type = String::from("String");
-            (cur_type, ok, flag)
+            (cur_type, false, flag)
         } else if params.is_i64() {
             let cur_type = String::from("i64");
-            (cur_type, ok, flag)
+            (cur_type, false, flag)
         } else if params.is_boolean() {
             let cur_type = String::from("bool");
-            (cur_type, ok, flag)
+            (cur_type, false, flag)
         } else if params.is_array() {
             let values = params.as_array().unwrap();
             let first = values.get(0).unwrap_or(&serde_json::Value::Null);
             if first == &serde_json::Value::Null {
                 let cur_type = format!("Vec<{}>", "Value");
-                return (cur_type, ok, flag);
+                return (cur_type, false, flag);
             }
             let cur = self.get_data_type(first, key);
-            ok = cur.1;
+            let ok = cur.1;
             flag = cur.2;
             let cur_type = format!("Vec<{}>", cur.0);
             (cur_type, ok, flag)
         } else if params.is_f64() {
             let cur_type = String::from("f64");
-            (cur_type, ok, flag)
+            (cur_type, false, flag)
         } else if params.is_u64() {
             let cur_type = String::from("u64");
-            (cur_type, ok, flag)
+            (cur_type, false, flag)
         } else {
             let cur_type = String::from("Value");
-            (cur_type, ok, flag)
+            (cur_type, false, flag)
         }
     }
 
