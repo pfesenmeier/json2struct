@@ -116,11 +116,11 @@ impl Parser {
 
             if first == &serde_json::Value::Null {
                 let cur_type = format!("Vec<{}>", "Value");
-                return (cur_type, false, true);
+                (cur_type, false, true)
+            } else {
+                let (cur0, ok, flag) = self.get_data_type(first, key);
+                (format!("Vec<{}>", cur0), ok, flag)
             }
-
-            let (cur0, ok, flag) = self.get_data_type(first, key);
-            (format!("Vec<{}>", cur0), ok, flag)
         } else if params.is_f64() {
             ("f64".to_string(), false, true)
         } else if params.is_u64() {
@@ -133,16 +133,14 @@ impl Parser {
     fn key_exists(&mut self, key: String, new_key: String) -> (String, bool) {
         self.index += 1;
         let cur_key = format!("{}{}", key, self.index);
+        self.index = 0;
 
-        let res = if self.name.contains(&new_key) {
+        if self.name.contains(&new_key) {
             let (new_key, ..) = self.key_exists(key, cur_key);
             (new_key, true)
         } else {
             self.name.push(new_key.clone());
             (new_key, false)
-        };
-
-        self.index = 0;
-        res
+        }
     }
 }
